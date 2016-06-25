@@ -3,10 +3,7 @@
 namespace CodeCommerce\Http\Controllers;
 
 use CodeCommerce\Category;
-use Illuminate\Http\Request;
-
-use CodeCommerce\Http\Requests;
-use CodeCommerce\Http\Controllers\Controller;
+use CodeCommerce\Http\Requests\CategoryRequest;
 
 class AdminCategoriesController extends Controller
 {
@@ -43,18 +40,24 @@ class AdminCategoriesController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.categories.form');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param CategoryRequest|Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        //
+        $input = $request->all();
+
+        $category = $this->category->fill($input);
+
+        $category->save();
+
+        return redirect()->route('admin.categories.index');
     }
 
     /**
@@ -65,7 +68,9 @@ class AdminCategoriesController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = $this->category->find($id);
+
+        return view('admin.categories.show', compact('category'));
     }
 
     /**
@@ -76,19 +81,23 @@ class AdminCategoriesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $category = $this->category->find($id);
+
+        return view('admin.categories.form', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param CategoryRequest|Request $request
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
-        //
+        $this->category->find($id)->update($request->all());
+
+        return redirect()->route('admin.categories.index');
     }
 
     /**
@@ -99,6 +108,8 @@ class AdminCategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->category->find($id)->delete();
+
+        return redirect()->route('admin.categories.index');
     }
 }

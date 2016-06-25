@@ -2,11 +2,8 @@
 
 namespace CodeCommerce\Http\Controllers;
 
+use CodeCommerce\Http\Requests\ProductRequest;
 use CodeCommerce\Product;
-use Illuminate\Http\Request;
-
-use CodeCommerce\Http\Requests;
-use CodeCommerce\Http\Controllers\Controller;
 
 class AdminProductsController extends Controller
 {
@@ -43,18 +40,24 @@ class AdminProductsController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.products.form');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param ProductRequest|Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        $input = $request->all();
+
+        $product = $this->product->fill($input);
+
+        $product->save();
+
+        return redirect()->route('admin.products.index');
     }
 
     /**
@@ -65,7 +68,9 @@ class AdminProductsController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = $this->product->find($id);
+
+        return view('admin.products.show', compact('product'));
     }
 
     /**
@@ -76,19 +81,23 @@ class AdminProductsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = $this->product->find($id);
+
+        return view('admin.products.form', compact('product'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param ProductRequest|Request $request
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        //
+        $this->product->find($id)->update($request->all());
+
+        return redirect()->route('admin.products.index');
     }
 
     /**
@@ -99,6 +108,8 @@ class AdminProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->product->find($id)->delete();
+
+        return redirect()->route('admin.products.index');
     }
 }
