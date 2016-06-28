@@ -29,6 +29,7 @@ $factory->define(CodeCommerce\Category::class, function (Faker\Generator $faker)
 
 $factory->define(CodeCommerce\Product::class, function (Faker\Generator $faker) {
     return [
+        'category_id' => $faker->numberBetween(1, 15),
         'name' => $faker->name,
         'description' => $faker->sentence,
         'price' => $faker->randomNumber(2),

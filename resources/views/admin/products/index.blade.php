@@ -17,6 +17,7 @@
             <th width="5%">Id</th>
             <th>Name</th>
             <th>Description</th>
+            <th>Category</th>
             <th width="8%">Price</th>
             <th width="8%">Featured</th>
             <th width="8%">Recommend</th>
@@ -28,6 +29,7 @@
                     <td>{{ $product->id }}</td>
                     <td>{{ str_limit(strip_tags($product->name), 40, '...') }}</td>
                     <td>{{ str_limit(strip_tags($product->description), 40, '...') }}</td>
+                    <td>{{ $product->category->name }}</td>
                     <td>$ {{ number_format((double) $product->price, 2) }}</td>
                     <td>{{ ($product->featured) ? 'yes' : 'no' }}</td>
                     <td>{{ ($product->recommend) ? 'yes' : 'no' }}</td>
@@ -40,6 +42,8 @@
             @endforeach
             </tbody>
         </table>
+
+        {!! $products->render() !!}
 
     </div>{{--/container--}}
 

@@ -35,6 +35,8 @@
             </tboty>
         </table>
 
+        {!! $categories->render() !!}
+
     </div>{{--/container--}}
 
 @endsection
