@@ -3,8 +3,13 @@
 namespace CodeCommerce\Http\Controllers;
 
 use CodeCommerce\Category;
+use CodeCommerce\Http\Requests\ProductImageRequest;
 use CodeCommerce\Http\Requests\ProductRequest;
 use CodeCommerce\Product;
+use CodeCommerce\ProductImage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class AdminProductsController extends Controller
 {
@@ -120,5 +125,44 @@ class AdminProductsController extends Controller
         $this->product->find($id)->delete();
 
         return redirect()->route('admin.products.index');
+    }
+
+    public function images($id, Product $product)
+    {
+        $product = $product->find($id);
+
+        return view('admin.products.images.index', compact('product'));
+    }
+
+    public function createImage($id, Product $product)
+    {
+        $product = $product->find($id);
+
+        return view('admin.products.images.form', compact('product'));
+    }
+
+    public function storeImage(ProductImageRequest $request, $id, ProductImage $productImage)
+    {
+        $file = $request->file('image');
+        $extension = $file->getClientOriginalExtension();
+
+        $image = $productImage::create(['product_id' => $id, 'extension' => $extension]);
+
+        Storage::disk('public_local')->put($image->id . '.' . $extension, File::get($file));
+
+        return redirect()->route('admin.products.images.index', ['id' => $id]);
+    }
+
+    public function destroyImage($id, $idImage, ProductImage $productImage)
+    {
+        $image = $productImage->find($idImage);
+
+        if (file_exists(public_path() . '/uploads/' . $image->id . '.' . $image->extension)) {
+            Storage::disk('public_local')->delete($image->id . '.' . $image->extension);
+        }
+
+        $image->delete();
+
+        return redirect()->route('admin.products.images.index', ['id' => $id]);
     }
 }

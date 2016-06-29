@@ -34,6 +34,7 @@
                     <td>{{ ($product->featured) ? 'yes' : 'no' }}</td>
                     <td>{{ ($product->recommend) ? 'yes' : 'no' }}</td>
                     <td class="text-right">
+                        <a href="{{ route('admin.products.images.index', ['id' => $product->id]) }}" class="btn btn-primary btn-xs">Images</a>
                         <a href="{{ route('admin.products.show', ['id' => $product->id]) }}" class="btn btn-primary btn-xs">View</a>
                         <a href="{{ route('admin.products.edit', ['id' => $product->id]) }}" class="btn btn-primary btn-xs">Edit</a>
                         <a href="{{ route('admin.products.destroy', ['id' => $product->id]) }}" class="btn btn-danger btn-xs">Delete</a>
