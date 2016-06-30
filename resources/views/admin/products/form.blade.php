@@ -43,6 +43,13 @@
         </div>
 
         <div class="form-group">
+            {!! Form::label('tag_list', 'Tags:', ['class' => 'col-sm-2 control-label']) !!}
+            <div class="col-sm-10">
+                {!! Form::textarea('tag_list', null, ['class' => 'form-control', 'placeholder' => 'Use commas to separate tags.', 'cols' => 50, 'rows' => 3]) !!}
+            </div>
+        </div>
+
+        <div class="form-group">
             {!! Form::label('featured', 'Featured:', ['class' => 'col-sm-2 control-label']) !!}
             <div class="col-sm-10">
                 <label class="radio-inline">

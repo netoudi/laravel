@@ -7,6 +7,7 @@ use CodeCommerce\Http\Requests\ProductImageRequest;
 use CodeCommerce\Http\Requests\ProductRequest;
 use CodeCommerce\Product;
 use CodeCommerce\ProductImage;
+use CodeCommerce\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -17,14 +18,20 @@ class AdminProductsController extends Controller
      * @var Product
      */
     private $product;
+    /**
+     * @var Tag
+     */
+    private $tag;
 
     /**
      * AdminProductsController constructor.
      * @param Product $product
+     * @param Tag $tag
      */
-    public function __construct(Product $product)
+    public function __construct(Product $product, Tag $tag)
     {
         $this->product = $product;
+        $this->tag = $tag;
     }
 
     /**
@@ -66,6 +73,8 @@ class AdminProductsController extends Controller
         $product = $this->product->fill($input);
 
         $product->save();
+
+        $this->syncTags($request->get('tag_list'), $product->id);
 
         return redirect()->route('admin.products.index');
     }
@@ -110,6 +119,8 @@ class AdminProductsController extends Controller
     public function update(ProductRequest $request, $id)
     {
         $this->product->find($id)->update($request->all());
+
+        $this->syncTags($request->get('tag_list'), $id);
 
         return redirect()->route('admin.products.index');
     }
@@ -164,5 +175,22 @@ class AdminProductsController extends Controller
         $image->delete();
 
         return redirect()->route('admin.products.images.index', ['id' => $id]);
+    }
+
+    private function syncTags($tagList, $id)
+    {
+        $syncTag = [];
+        $tags = explode(',', str_replace(';', ',', $tagList));
+        $tags = array_filter($tags);
+        $tags = array_map('trim', $tags);
+        $tags = array_map('strip_tags', $tags);
+        $tags = array_map('strtolower', $tags);
+
+        foreach ($tags as $tag) {
+            $syncTag[] = $this->tag->firstOrCreate(['name' => $tag])->id;
+        }
+
+        $product = $this->product->find($id);
+        $product->tags()->sync($syncTag);
     }
 }

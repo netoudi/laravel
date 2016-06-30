@@ -26,6 +26,7 @@ class ProductRequest extends Request
             'name' => 'required|min:3',
             'description' => 'required',
             'price' => 'required|numeric',
+            'tag_list' => 'required|min:3',
             'featured' => 'boolean',
             'recommend' => 'boolean',
         ];
