@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('admin.categories.index');
-});
+Route::get('/', 'StoreController@index');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
