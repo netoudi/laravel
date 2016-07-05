@@ -19,7 +19,7 @@
             <th>User</th>
             <th width="8%">Qtd (Items)</th>
             <th width="8%">Total</th>
-            <th width="8%">Status</th>
+            <th width="15%">Status</th>
             <th width="18%">Action</th>
             </thead>
             <tbody>
@@ -30,7 +30,7 @@
                     <td>{{ $order->user->name }}</td>
                     <td>{{ count($order->items) }}</td>
                     <td>$ {{ number_format($order->total, 2) }}</td>
-                    <td>{{ $order->status  }}</td>
+                    <td>{{ $order->getStatus()  }}</td>
                     <td class="text-right">
                         <a href="{{ route('admin.orders.edit', ['id' => $order->id]) }}" class="btn btn-primary btn-xs">To manage</a>
                     </td>

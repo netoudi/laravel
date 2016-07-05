@@ -44,7 +44,7 @@
                                     $ {{ number_format($order->total, 2) }}
                                 </td>
                                 <td>
-                                    {{ $order->status }}
+                                    {{ $order->getStatus() }}
                                 </td>
                             </tr>
                         @empty

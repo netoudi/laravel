@@ -43,13 +43,7 @@ class AdminOrdersController extends Controller
     public function edit($id)
     {
         $order = $this->order->find($id);
-
-        $options = [
-            0 => 'Waiting for Payment',
-            1 => 'Product Submitted',
-            2 => 'Product Hand',
-            3 => 'Cancelled',
-        ];
+        $options = $this->order->getOptions();
 
         return view('admin.orders.form', compact('order', 'options'));
     }
