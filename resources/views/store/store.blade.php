@@ -52,7 +52,7 @@
                             @if (Auth::guest())
                                 <li><a href="{{ url('/auth/login') }}"><i class="fa fa-lock"></i> Login</a></li>
                             @else
-                                <li><a href="{{ url('/auth/logout') }}"><i class="fa fa-sign-out"></i> Logout</a></li>
+                                <li><a href="{{ url('/auth/logout') }}"><i class="fa fa-sign-out"></i> Logout ({{ Auth::user()->name }})</a></li>
                             @endif
                         </ul>
                     </div>
