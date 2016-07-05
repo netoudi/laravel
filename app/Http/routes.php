@@ -29,7 +29,14 @@ Route::post('/cart/update', ['as' => 'cart.update', 'uses' => 'CartController@up
 
 Route::get('/cart/destroy/{id}', ['as' => 'cart.destroy', 'uses' => 'CartController@destroy']);
 
-Route::get('/checkout/placeOrder', ['middleware' => 'auth', 'as' => 'checkout.place', 'uses' => 'CheckoutController@place']);
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/checkout/placeOrder', ['as' => 'checkout.place', 'uses' => 'CheckoutController@place']);
+
+    Route::get('/account', ['as' => 'account', 'uses' => 'AccountController@index']);
+    Route::get('/account/orders', ['as' => 'account.orders', 'uses' => 'AccountController@orders']);
+
+});
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'admin']], function () {
 
