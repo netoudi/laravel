@@ -2,11 +2,11 @@
 
 namespace CodeCommerce\Http\Controllers\Auth;
 
-use CodeCommerce\User;
-use Validator;
 use CodeCommerce\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
+use CodeCommerce\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -25,8 +25,6 @@ class AuthController extends Controller
 
     /**
      * Create a new authentication controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -36,7 +34,7 @@ class AuthController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -45,13 +43,17 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:6',
+            'address' => 'required|min:3',
+            'city' => 'required|min:3',
+            'state' => 'required|min:2',
+            'zipcode' => 'required|min:3',
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return User
      */
     protected function create(array $data)
@@ -60,6 +62,11 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'phone' => $data['phone'],
+            'address' => $data['address'],
+            'city' => $data['city'],
+            'state' => $data['state'],
+            'zipcode' => $data['zipcode'],
         ]);
     }
 }
