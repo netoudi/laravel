@@ -63,7 +63,7 @@
                         </tr>
                         <tr>
                             <td class="text-right" colspan="6">
-                                <a href="#" class="btn btn-primary">Proceed to checkout</a>
+                                <a href="{{ route('checkout.place') }}" class="btn btn-primary">Proceed to checkout</a>
                             </td>
                         </tr>
                     @endif

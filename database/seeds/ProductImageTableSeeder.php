@@ -11,6 +11,17 @@ class ProductImageTableSeeder extends Seeder
      */
     public function run()
     {
+        $dirUploads = public_path('uploads');
+
+        if ($curdir = opendir($dirUploads)) {
+            while ($file = readdir($curdir)) {
+                if ($file != '.' && $file != '..') {
+                    unlink($dirUploads . '/' . $file);
+                }
+            }
+            closedir($curdir);
+        }
+
         foreach (range(1, 18) as $idProduct) {
             factory(CodeCommerce\ProductImage::class)->create([
                     'product_id' => $idProduct,
@@ -22,7 +33,6 @@ class ProductImageTableSeeder extends Seeder
         factory(CodeCommerce\ProductImage::class, 7)->create();
 
         $count = 1;
-        $dirUploads = public_path('uploads');
 
         if ($curdir = opendir($dirUploads)) {
             while ($file = readdir($curdir)) {

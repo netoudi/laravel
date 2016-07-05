@@ -13,6 +13,8 @@
 
 Route::get('/', 'StoreController@index');
 
+Route::get('/home', 'StoreController@index');
+
 Route::get('/category/{id}', ['as' => 'store.category', 'uses' => 'StoreController@category']);
 
 Route::get('/product/{id}', ['as' => 'store.product', 'uses' => 'StoreController@product']);
@@ -27,7 +29,9 @@ Route::post('/cart/update', ['as' => 'cart.update', 'uses' => 'CartController@up
 
 Route::get('/cart/destroy/{id}', ['as' => 'cart.destroy', 'uses' => 'CartController@destroy']);
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::get('/checkout/placeOrder', ['middleware' => 'auth', 'as' => 'checkout.place', 'uses' => 'CheckoutController@place']);
+
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'admin']], function () {
 
     Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'AdminCategoriesController@index']);
@@ -57,3 +61,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     });
 
 });
+
+Route::controllers([
+    'auth' => 'Auth\AuthController',
+    'password' => 'Auth\PasswordController',
+]);
