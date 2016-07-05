@@ -3,9 +3,10 @@
 @section('content')
     <section id="cart_items">
         <div class="container">
+            <h3>Pedido realizado com sucesso!</h3>
+            <p>O pedido #{{ $order->id }}, foi realizado com sucesso.</p>
             <div class="table-responsive cart_info">
                 <table class="table table-condensed">
-                    <caption><h1 class="text-left">#{{ str_pad($order->id, 4, 0, STR_PAD_LEFT) }} order completed!</h1></caption>
                     <thead>
                     <tr class="cart_menu">
                         <td class="image"></td>

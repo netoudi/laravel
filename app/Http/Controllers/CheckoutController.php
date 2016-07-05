@@ -57,6 +57,6 @@ class CheckoutController extends Controller
             Session::forget('cart');
         }
 
-        return view('store.order', compact('order'));
+        return view('store.checkout', compact('order'));
     }
 }
