@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'codecommerce@code.education', 'name' => 'Code Education'],
 
     /*
     |--------------------------------------------------------------------------

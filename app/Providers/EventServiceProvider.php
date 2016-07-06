@@ -13,15 +13,15 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'CodeCommerce\Events\SomeEvent' => [
-            'CodeCommerce\Listeners\EventListener',
+        'CodeCommerce\Events\CheckoutEvent' => [
+            'CodeCommerce\Listeners\SendEmailListener',
         ],
     ];
 
     /**
      * Register any other events for your application.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @param  \Illuminate\Contracts\Events\Dispatcher $events
      * @return void
      */
     public function boot(DispatcherContract $events)
