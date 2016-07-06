@@ -73,6 +73,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'a
         Route::patch('/update/{id}', ['as' => 'update', 'uses' => 'AdminOrdersController@update']);
     });
 
+    Route::get('/email', function () {
+        $order = \CodeCommerce\Order::all()->last();
+        return view('emails.checkout', compact('order'));
+    });
+
 });
 
 Route::controllers([
