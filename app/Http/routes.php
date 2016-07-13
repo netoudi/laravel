@@ -31,7 +31,9 @@ Route::get('/cart/destroy/{id}', ['as' => 'cart.destroy', 'uses' => 'CartControl
 
 Route::group(['middleware' => ['auth']], function () {
 
+    Route::get('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@checkout']);
     Route::get('/checkout/placeOrder', ['as' => 'checkout.place', 'uses' => 'CheckoutController@place']);
+    Route::get('/checkout/payment', ['as' => 'checkout.payment', 'uses' => 'CheckoutController@payment']);
 
     Route::get('/account', ['as' => 'account', 'uses' => 'AccountController@index']);
     Route::get('/account/orders', ['as' => 'account.orders', 'uses' => 'AccountController@orders']);
