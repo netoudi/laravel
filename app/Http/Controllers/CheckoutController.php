@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use PHPSC\PagSeguro\Items\Item;
+use PHPSC\PagSeguro\Purchases\Transactions\Locator;
 use PHPSC\PagSeguro\Requests\Checkout\CheckoutService;
 
 class CheckoutController extends Controller
@@ -29,19 +30,25 @@ class CheckoutController extends Controller
      * @var CheckoutService
      */
     private $checkoutService;
+    /**
+     * @var Locator
+     */
+    private $locator;
 
     /**
      * CheckoutController constructor.
      * @param Order $order
      * @param OrderItem $orderItem
      * @param CheckoutService $checkoutService
+     * @param Locator $locator
      */
-    public function __construct(Order $order, OrderItem $orderItem, CheckoutService $checkoutService)
+    public function __construct(Order $order, OrderItem $orderItem, CheckoutService $checkoutService, Locator $locator)
     {
         $this->user = Auth::user();
         $this->order = $order;
         $this->orderItem = $orderItem;
         $this->checkoutService = $checkoutService;
+        $this->locator = $locator;
     }
 
     public function place()
@@ -78,16 +85,40 @@ class CheckoutController extends Controller
 
     public function payment(Request $request)
     {
-        $transaction = $request->get('id');
-        $order = $this->user->orders->last();
-        $order->transaction = $transaction;
-        $order->save();
+        try {
+            $idTransaction = $request->get('id');
 
-        Session::set('checkout', $order);
+            // Consultar detalhes da transação
+            $transaction = $this->locator->getByCode($idTransaction);
 
-        event(new CheckoutEvent(Auth::user(), $order));
+            if ($transaction) {
+                // Pegar os detalhes
+                $details = $transaction->getDetails();
 
-        return redirect()->route('checkout');
+                // Consultar a order através da referência passada no checkout
+                $order = Order::find($details->getReference());
+
+                // Inserir o status atual da transação
+                $order->status = $details->getStatus();
+
+                // Inserir o id da transação
+                $order->transaction = $idTransaction;
+
+                // Salvar dados
+                $order->save();
+
+                Session::set('checkout', $order);
+
+                // Notificar cliente sobre seu novo pedido realizado
+                event(new CheckoutEvent(Auth::user(), $order));
+
+                return redirect()->route('checkout');
+            } else {
+                throw new \Exception('Dados informados estão incorretos.');
+            }
+        } catch (\Exception $error) {
+            return redirect('/');
+        }
     }
 
     public function checkout()
@@ -100,5 +131,41 @@ class CheckoutController extends Controller
         }
 
         return redirect()->route('cart');
+    }
+
+    public function notification(Request $request)
+    {
+        try {
+            $notificationCode = $request->get('notificationCode');
+            $notificationType = $request->get('notificationType');
+
+            if ($notificationType == 'transaction') {
+                // Consultar detalhes da transação
+                $transaction = $this->locator->getByNotification($notificationCode);
+
+                // Pegar os detalhes
+                $details = $transaction->getDetails();
+
+                // Consultar a order através da referência passada no checkout
+                $order = Order::find($details->getReference());
+
+                // Atualizar o status da order para o status atual da transação
+                $order->status = $details->getStatus();
+
+                // Inserir o id da transação
+                if (empty($order->transaction)) {
+                    $order->transaction = $details->getCode();
+                }
+
+                // Salvar dados alterados
+                $order->save();
+
+                return response(null, 200);
+            } else {
+                throw new \Exception('Dados informados estão incorretos.');
+            }
+        } catch (\Exception $error) {
+            return response($error->getMessage(), 500);
+        }
     }
 }

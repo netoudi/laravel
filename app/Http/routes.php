@@ -29,6 +29,10 @@ Route::post('/cart/update', ['as' => 'cart.update', 'uses' => 'CartController@up
 
 Route::get('/cart/destroy/{id}', ['as' => 'cart.destroy', 'uses' => 'CartController@destroy']);
 
+Route::group(['middleware' => ['cors']], function () {
+    Route::post('/checkout/notification', ['as' => 'checkout.notification', 'uses' => 'CheckoutController@notification']);
+});
+
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/checkout', ['as' => 'checkout', 'uses' => 'CheckoutController@checkout']);
